@@ -1,12 +1,9 @@
 define(["ol", "proj4"], function(ol_is_a_global, proj4) {
-	
-	var RD = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs";
-	
-	proj4.defs("EPSG:28992", RD);
+
+	proj4.defs("EPSG:28992","+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs");
+
 	ol.proj.proj4.register(proj4);
 	
-	/*- Thanks to: https://geoforum.nl/t/brt-in-openlayers-4-6-4-hangen-mbv-wmts/1150/2 */ 
-
 	// Geldigheidsgebied van het tiling schema in RD-coördinaten:
 	var extent = [-285401.92, 22598.08, 595401.9199999999, 903401.9199999999];
 	var projection = new ol.proj.Projection({ 
@@ -14,12 +11,14 @@ define(["ol", "proj4"], function(ol_is_a_global, proj4) {
 		units: 'm', 
 		extent: extent 
 	});
+	
 	// Resoluties (pixels per meter) van de zoomniveaus:
 	var resolutions = [3440.640, 1720.320, 860.160, 430.080, 215.040, 107.520, 53.760, 26.880, 13.440, 6.720, 3.360, 1.680, 0.840, 0.420, 0.210];
 	var size = ol.extent.getWidth(extent) / 256;
+	
 	// Er zijn 15 (0 tot 14) zoomniveaus beschikbaar van de WMTS-service voor de BRT-Achtergrondkaart:
 	var matrixIds = new Array(15);
-	for (var z = 0; z < 15; ++z) {
+	for(var z = 0; z < 15; ++z) {
 	    matrixIds[z] = 'EPSG:28992:' + z;
 	}
 	
@@ -252,9 +251,9 @@ define(["ol", "proj4"], function(ol_is_a_global, proj4) {
 		    };
 		},
 		ll2rd: function(lon, lat) {
-			if(lat.lon !== undefined) {
-				lon = lat.lon;
-				lat = lat.lat;
+			if(lon.lat !== undefined) {
+				lon = lon.lon;
+				lat = lon.lat;
 			}
 			
 			var phi84 = lat;
@@ -272,7 +271,6 @@ define(["ol", "proj4"], function(ol_is_a_global, proj4) {
 /* gpscoordinaten.eu */
 		rd2ll: function(x, y) {
 			return [Helpers.RD2lat(x, y), Helpers.RD2lng(x, y)];
-			
 /*- inverse of ll2rd?
 
 			var phiRD = x;
@@ -303,3 +301,6 @@ define(["ol", "proj4"], function(ol_is_a_global, proj4) {
 	};
 });
 
+/*- Thanks to: https://geoforum.nl/t/brt-in-openlayers-4-6-4-hangen-mbv-wmts/1150/2 */ 
+	// var RD = "+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs";
+	// proj4.defs("EPSG:28992", RD);
